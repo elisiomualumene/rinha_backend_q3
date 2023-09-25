@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  worker:
+    container_name: worker
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/app
+    networks:
+      - worker_bridge
+    depends_on:
+      - postgres
+  postgres:
+    container_name: postgres
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/data/postgres
+    networks:
+      - worker_bridge
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: root
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  worker_bridge:
+    driver: bridge
