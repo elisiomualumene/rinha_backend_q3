@@ -38,8 +38,35 @@ export class PersonRepositoryImpl implements IPersonRepository {
 
         return PrismaPersonMapper.toDomain(person);
     }
-    async search(term: string): Promise<Person> {
-        throw new Error("Method not implemented.");
+    async search(term: string): Promise<Person[]> {
+        const person = await this.prisma.person.findMany({
+            where: {
+                OR: [
+                    {
+                        apelido: {
+                            contains: term,
+                        },
+                    },
+                    {
+                        nome: {
+                            contains: term,
+                        },
+                    },
+                    {
+                        nascimento: {
+                            contains: term
+                        }
+                    },
+                    {
+                        stack: {
+                            has: term
+                        }
+                    }
+                ],
+            },
+        });
+
+        return person.map((person) => PrismaPersonMapper.toDomain(person));
     }
     async countPeople(): Promise<number> {
         const counter = await this.prisma.person.count();
