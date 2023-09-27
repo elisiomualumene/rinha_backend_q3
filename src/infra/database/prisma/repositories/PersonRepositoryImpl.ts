@@ -1,23 +1,49 @@
 import { Injectable } from "@nestjs/common";
-import { People } from "src/app/people/entities/person";
-import { IPersonRepository } from "src/app/people/repositories/IPersonRepository";
+import { Person } from "../../../../app/people/entities/person";
+import { IPersonRepository } from "../../../../app/people/repositories/IPersonRepository";
+import { PrismaService } from "../prisma.service";
+import { PrismaPersonMapper } from "../mappers";
 
 @Injectable()
 export class PersonRepositoryImpl implements IPersonRepository {
-    create(people: People): Promise<void> {
+    constructor(private prisma: PrismaService) { }
+
+    async create(person: Person): Promise<Person> {
+        const raw = PrismaPersonMapper.toPrisma(person);
+        const index = await this.prisma.person.create({
+            data: raw
+        })
+        return PrismaPersonMapper.toDomain(index);
+    }
+    async personById(id: string): Promise<Person> {
+        const person = await this.prisma.person.findUnique({
+            where: { id },
+        });
+
+        if (!person) {
+            console.log("aqui")
+            return null;
+        }
+
+        return PrismaPersonMapper.toDomain(person);
+    }
+    async personByNickName(nickname: string): Promise<Person> {
+        const person = await this.prisma.person.findFirst({
+            where: { apelido: nickname },
+        });
+
+        if (!person) {
+            return null;
+        }
+
+        return PrismaPersonMapper.toDomain(person);
+    }
+    async search(term: string): Promise<Person> {
         throw new Error("Method not implemented.");
     }
-    personById(id: string): Promise<People> {
-        throw new Error("Method not implemented.");
-    }
-    personByNickName(nickname: string): Promise<People> {
-        throw new Error("Method not implemented.");
-    }
-    search(term: string): Promise<People> {
-        throw new Error("Method not implemented.");
-    }
-    countPeople(): Promise<any> {
-        throw new Error("Method not implemented.");
+    async countPeople(): Promise<number> {
+        const counter = await this.prisma.person.count();
+        return counter;
     }
 
 }

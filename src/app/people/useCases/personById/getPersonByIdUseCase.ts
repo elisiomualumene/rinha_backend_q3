@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { UseCase, badRequestResponse, successResponse } from "src/shared/contracts";
+import { UseCase, badRequestResponse, successResponse } from "../../../../shared/contracts";
 import { IPersonRepository } from "../../repositories/IPersonRepository";
 
 @Injectable()

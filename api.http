@@ -1,0 +1,18 @@
+POST 
+https://orange-space-computing-machine-5pq7v57r595f7574-3000.app.github.dev/person
+Content-Type: "application/json"
+
+{
+    "apelido": "Eliude",
+    "nome": "Elisio Mualumene",
+    "nascimento": "{{$datetime iso8601}}",
+    "stack": ["node", "go"]
+}
+
+###
+GET 
+host/person/id
+
+###
+GET 
+host/person

@@ -1,4 +1,4 @@
-FROM node:slim
+FROM node
 
 WORKDIR /usr/app
 
@@ -12,5 +12,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD [ "tail -f /dev/null" ]
-
+CMD [ "yarn", "start:dev" ]

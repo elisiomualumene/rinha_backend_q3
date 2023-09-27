@@ -3,12 +3,12 @@ import { randomUUID } from "crypto";
 export interface IPerson {
     apelido: string;
     nome: string;
-    nascimento: Date;
+    nascimento: string;
     stack?: string[];
     created_at?: Date;
 }
 
-export class People {
+export class Person {
     private _id: string;
     private props: IPerson;
 
@@ -36,11 +36,11 @@ export class People {
         this.props.nome = nome;
     }
 
-    public get nascimento(): Date {
+    public get nascimento(): string {
         return this.props.nascimento;
     }
 
-    public set nascimento(nascimento: Date) {
+    public set nascimento(nascimento: string) {
         this.props.nascimento = nascimento;
     }
 

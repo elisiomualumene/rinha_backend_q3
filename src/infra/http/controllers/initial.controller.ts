@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { IInitialRouterProps } from 'src/shared/@types/initial';
+import { IInitialRouterProps } from '../../../shared/@types/initial';
 
 @Controller()
 export class InitialRoute {
