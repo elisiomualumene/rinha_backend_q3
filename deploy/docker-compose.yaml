@@ -5,8 +5,10 @@ services:
     hostname: worker1
     depends_on:
       - postgres
-    expose:
-      - "3000"
+    networks:
+      - worker_bridge
+    ports:
+      - "3000:3000"
     deploy:
       resources:
         limits:
@@ -18,8 +20,10 @@ services:
     hostname: worker2
     depends_on:
       - postgres
-    expose:
-      - "3001"
+    ports:
+      - "3001:3000"
+    networks:
+      - worker_bridge
     deploy:
       resources:
         limits:
@@ -29,22 +33,42 @@ services:
   nginx:
     image: nginx:latest
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - worker1
       - worker2
     ports:
-      - "9999:9999"
+      - "8080:80"
+    networks:
+      - worker_bridge
     deploy:
       resources:
         limits:
           cpus: '0.25'
           memory: '0.5GB'
-
   postgres:
-   image: postgres
-   deploy:
+    container_name: postgres
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/data/postgres
+    networks:
+      - worker_bridge
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: root
+    deploy:
       resources:
         limits:
           cpus: '0.75'
           memory: '1.5GB'
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  worker_bridge:
+    driver: bridge
