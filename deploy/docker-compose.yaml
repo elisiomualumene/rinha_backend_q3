@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  worker1:
+    image: elisiomualumene/worker:latest
+    hostname: worker1
+    depends_on:
+      - postgres
+    expose:
+      - "3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: '0.5GB'
+
+  worker2:
+    image: elisiomualumene/worker:latest
+    hostname: worker2
+    depends_on:
+      - postgres
+    expose:
+      - "3001"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: '0.5GB'
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - worker1
+      - worker2
+    ports:
+      - "9999:9999"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: '0.5GB'
+
+  postgres:
+   image: postgres
+   deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: '1.5GB'
